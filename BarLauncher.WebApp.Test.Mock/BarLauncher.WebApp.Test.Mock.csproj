@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BarLauncher.EasyHelper.Test.Mock" Version="2.0.0" />
+    <PackageReference Include="BarLauncher.EasyHelper.Test.Mock" Version="2.0.1" />
   </ItemGroup>
   
   <ItemGroup>
