@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net48</TargetFramework>
+        <Version>2.0.1</Version>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="FluentDataAccess" Version="2.1.1" />
+        <PackageReference Include="FluentDataAccess.SQLite" Version="2.1.1" />
+        <PackageReference Include="BarLauncher.EasyHelper.Wox" Version="2.0.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\BarLauncher.WebApp.Lib\BarLauncher.WebApp.Lib.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="plugin.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="BarLauncher-WebApp-64.png">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+</Project>
