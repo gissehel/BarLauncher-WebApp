@@ -1,15 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="BarLauncher.EasyHelper.Test.Mock" Version="2.0.1" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <ProjectReference Include="..\BarLauncher.WebApp.Lib\BarLauncher.WebApp.Lib.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="BarLauncher.EasyHelper.Test.Mock" Version="2.0.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\BarLauncher.WebApp.Lib\BarLauncher.WebApp.Lib.csproj" />
+    </ItemGroup>
 
 </Project>
