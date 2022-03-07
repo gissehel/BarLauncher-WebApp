@@ -214,16 +214,39 @@ namespace BarLauncher.WebApp.Lib.Service
             {
                 var keywords = query.GetAllSearchTermsStarting(position + 1);
                 string profile = "default";
-                HelperService.ExtractProfile(keywords, ref keywords, ref profile);
-                yield return GetActionResult
-                    (
-                        string.Format("add {0} {1} [{2}]", url, keywords, profile),
-                        string.Format("Add the url {0} with keywords ({1}) and using profile [{2}]", url, keywords, profile),
-                        () =>
-                        {
-                            WebAppService.AddWebAppItem(url, keywords, profile);
-                        }
-                    );
+                if (keywords == null)
+                {
+                    keywords = string.Empty;
+                }
+                else
+                {
+                    HelperService.ExtractProfile(keywords, ref keywords, ref profile);
+                }
+                keywords = keywords.Trim(' ');
+                if (keywords == "")
+                {
+                    yield return GetActionResult
+                        (
+                            string.Format("add {0} [{1}]", url, profile),
+                            string.Format("Add the url {0} with no keywords and using profile [{1}]", url, profile),
+                            () =>
+                            {
+                                WebAppService.AddWebAppItem(url, keywords, profile);
+                            }
+                        );
+                }
+                else
+                {
+                    yield return GetActionResult
+                        (
+                            string.Format("add {0} {1} [{2}]", url, keywords, profile),
+                            string.Format("Add the url {0} with keywords ({1}) and using profile [{2}]", url, keywords, profile),
+                            () =>
+                            {
+                                WebAppService.AddWebAppItem(url, keywords, profile);
+                            }
+                        );
+                }
             }
             else
             {

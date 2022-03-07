@@ -56,5 +56,15 @@ namespace BarLauncher.WebApp.Test.NUnit
             Assert.AreEqual("poide praf pido [poide", keywords);
             Assert.Null(profile);
         }
+
+        [Test]
+        public void ExtractOnlyProfile()
+        {
+            var keywords = "[poide]";
+            string profile = null;
+            Assert.True(HelperService.ExtractProfile(keywords, ref keywords, ref profile));
+            Assert.AreEqual("", keywords);
+            Assert.AreEqual("poide", profile);
+        }
     }
 }
