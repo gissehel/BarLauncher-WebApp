@@ -1,11 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <Import Project="..\Common.targets"/>
 
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="BarLauncher.EasyHelper.Test.Mock" Version="2.0.1" />
+        <PackageReference Include="BarLauncher.EasyHelper.Test.Mock" Version="2.0.2" />
     </ItemGroup>
 
     <ItemGroup>

@@ -1,0 +1,7 @@
+<Project>
+	<PropertyGroup>
+		<Version>2.0.3</Version>
+        <Authors>gissehel</Authors>
+        <Copyright>MIT</Copyright>
+	</PropertyGroup>
+</Project>
