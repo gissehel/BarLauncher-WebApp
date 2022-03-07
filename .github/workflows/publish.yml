@@ -32,9 +32,9 @@ jobs:
               run: |
                 dotnet.exe build ${{ env.SOLUTION_NAME }} -c Release
 
-                cd "BarLauncher.WebApp.Wox/bin/Release/net48/publish"
-                7z a -tzip "../../../../../BarLauncher.WebApp.Wox-${{ env.VERSION_LABEL }}.zip" "*"
-                cd "../../../../.."
+                cd "BarLauncher.WebApp.Wox/bin/Release/net48"
+                7z a -tzip "../../../../BarLauncher.WebApp.Wox-${{ env.VERSION_LABEL }}.zip" "*"
+                cd "../../../.."
 
             - name: Upload Artifacts
               uses: actions/upload-artifact@v2
