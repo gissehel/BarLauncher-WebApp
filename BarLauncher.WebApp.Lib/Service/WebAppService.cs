@@ -16,7 +16,9 @@ namespace BarLauncher.WebApp.Lib.Service
 
         private IWebAppConfigurationRepository WebAppConfigurationRepository { get; set; }
 
-        private ISystemWebAppService SystemService { get; set; }
+        private ISystemService SystemService { get; set; }
+
+        private IDataAccessWebAppService DataAccessWebAppService { get; set; }
 
         private IFileGeneratorService FileGeneratorService { get; set; }
 
@@ -26,12 +28,13 @@ namespace BarLauncher.WebApp.Lib.Service
 
         private IApplicationInformationService ApplicationInformationService { get; set; }
 
-        public WebAppService(IDataAccessService dataAccessService, IWebAppItemRepository webAppItemRepository, IWebAppConfigurationRepository webAppConfigurationRepository, ISystemWebAppService systemService, IFileGeneratorService fileGeneratorService, IFileReaderService fileReaderService, IHelperService helperService, IApplicationInformationService applicationInformationService)
+        public WebAppService(IDataAccessService dataAccessService, IWebAppItemRepository webAppItemRepository, IWebAppConfigurationRepository webAppConfigurationRepository, ISystemService systemService, IDataAccessWebAppService dataAccessWebAppService, IFileGeneratorService fileGeneratorService, IFileReaderService fileReaderService, IHelperService helperService, IApplicationInformationService applicationInformationService)
         {
             DataAccessService = dataAccessService;
             WebAppItemRepository = webAppItemRepository;
             WebAppConfigurationRepository = webAppConfigurationRepository;
             SystemService = systemService;
+            DataAccessWebAppService = dataAccessWebAppService;
             FileGeneratorService = fileGeneratorService;
             FileReaderService = fileReaderService;
             HelperService = helperService;
@@ -134,8 +137,8 @@ namespace BarLauncher.WebApp.Lib.Service
 
         public void Export()
         {
-            var exportDirectory = SystemService.GetExportPath();
-            var exportFilename = string.Format("{0}-Save-{1}.wap.txt", ApplicationInformationService.ApplicationName, SystemService.GetUID());
+            var exportDirectory = DataAccessWebAppService.GetExportPath();
+            var exportFilename = string.Format("{0}-Save-{1}.wap.txt", ApplicationInformationService.ApplicationName, DataAccessWebAppService.GetUID());
             var exportFullFilename = Path.Combine(exportDirectory, exportFilename);
             using (var fileGenerator = FileGeneratorService.CreateGenerator(exportFullFilename))
             {
@@ -168,7 +171,7 @@ namespace BarLauncher.WebApp.Lib.Service
                 }
                 fileGenerator.Generate();
             }
-            SystemService.StartCommandLine(exportDirectory, "");
+            SystemService.OpenDirectory(exportDirectory);
         }
 
         public bool FileExists(string path) => FileReaderService.FileExists(path);

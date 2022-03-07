@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    <Import Project="..\Common.targets"/>
+    <Import Project="..\Common.targets" />
 
     <PropertyGroup>
         <TargetFramework>net48</TargetFramework>
@@ -15,7 +15,7 @@
         </PackageReference>
         <PackageReference Include="FluentDataAccess" Version="2.1.1" />
         <PackageReference Include="FluentDataAccess.SQLite" Version="2.1.1" />
-        <PackageReference Include="BarLauncher.EasyHelper" Version="2.0.2" />
+        <PackageReference Include="BarLauncher.EasyHelper" Version="2.0.3" />
     </ItemGroup>
 
     <ItemGroup>

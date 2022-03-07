@@ -3,7 +3,7 @@ using FluentDataAccess;
 
 namespace BarLauncher.WebApp.Lib.Core.Service
 {
-    public interface ISystemWebAppService : ISystemService, IDataAccessConfigurationByPath
+    public interface IDataAccessWebAppService : IDataAccessConfigurationByPath
     {
         string GetExportPath();
 

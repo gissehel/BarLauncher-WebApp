@@ -13,9 +13,9 @@ namespace BarLauncher.WebApp.Lib.Service
 
         private IApplicationInformationService ApplicationInformationService { get; set; }
 
-        private ISystemWebAppService SystemWebAppService { get; set; }
+        private ISystemService SystemWebAppService { get; set; }
 
-        public WebAppResultFinder(IBarLauncherContextService barLauncherContextService, IWebAppService webAppService, IHelperService helperService, IApplicationInformationService applicationInformationService, ISystemWebAppService systemWebAppService) : base(barLauncherContextService)
+        public WebAppResultFinder(IBarLauncherContextService barLauncherContextService, IWebAppService webAppService, IHelperService helperService, IApplicationInformationService applicationInformationService, ISystemService systemWebAppService) : base(barLauncherContextService)
         {
             WebAppService = webAppService;
             HelperService = helperService;

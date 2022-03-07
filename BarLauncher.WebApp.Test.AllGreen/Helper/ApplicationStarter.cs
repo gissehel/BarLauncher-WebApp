@@ -14,7 +14,8 @@ namespace BarLauncher.WebApp.Test.AllGreen.Helper
     {
         public BarLauncherContextServiceMock BarLauncherContextService { get; set; }
         public QueryServiceMock QueryService { get; set; }
-        public SystemWebAppServiceMock SystemService { get; set; }
+        public SystemServiceMock SystemService { get; set; }
+        public DataAccessWebAppServiceMock DataAccessWebAppService { get; set; }
         public IBarLauncherResultFinder BarLauncherWebAppResultFinder { get; set; }
         private IWebAppService WebAppService { get; set; }
         public IHelperService HelperService { get; set; }
@@ -30,15 +31,16 @@ namespace BarLauncher.WebApp.Test.AllGreen.Helper
             TestName = testName;
             QueryServiceMock queryService = new QueryServiceMock();
             BarLauncherContextServiceMock barLauncherContextService = new BarLauncherContextServiceMock(queryService);
-            SystemWebAppServiceMock systemService = new SystemWebAppServiceMock();
-            IDataAccessService dataAccessService = DataAccessSQLite.GetService(systemService);
+            SystemServiceMock systemService = new SystemServiceMock();
+            DataAccessWebAppServiceMock dataAccessWebAppService = new DataAccessWebAppServiceMock(systemService);
+            IDataAccessService dataAccessService = DataAccessSQLite.GetService(dataAccessWebAppService);
             IWebAppItemRepository webAppItemRepository = new WebAppItemRepository(dataAccessService);
             IWebAppConfigurationRepository webAppConfigurationRepository = new WebAppConfigurationRepository(dataAccessService);
             FileGeneratorServiceMock fileGeneratorService = new FileGeneratorServiceMock();
             FileReaderServiceMock fileReaderService = new FileReaderServiceMock();
             IHelperService helperService = new HelperService();
             ApplicationInformationServiceMock applicationInformationService = new ApplicationInformationServiceMock();
-            IWebAppService webAppService = new WebAppService(dataAccessService, webAppItemRepository, webAppConfigurationRepository, systemService, fileGeneratorService, fileReaderService, helperService, applicationInformationService);
+            IWebAppService webAppService = new WebAppService(dataAccessService, webAppItemRepository, webAppConfigurationRepository, systemService, dataAccessWebAppService, fileGeneratorService, fileReaderService, helperService, applicationInformationService);
             IBarLauncherResultFinder barLauncherWebAppResultFinder = new WebAppResultFinder(barLauncherContextService, webAppService, helperService, applicationInformationService, systemService);
 
             systemService.ApplicationDataPath = GetApplicationDataPath();

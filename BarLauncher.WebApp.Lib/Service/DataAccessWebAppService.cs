@@ -1,25 +1,28 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using BarLauncher.EasyHelper.Core.Service;
 using BarLauncher.EasyHelper.Service;
 using BarLauncher.WebApp.Lib.Core.Service;
 
 namespace BarLauncher.WebApp.Lib.Service
 {
-    public class SystemWebAppService : SystemService, ISystemWebAppService
+    public class DataAccessWebAppService : IDataAccessWebAppService
     {
+        private ISystemService SystemService { get; set; }
 
-        public SystemWebAppService(string applicationName) : base(applicationName)
+        public DataAccessWebAppService(ISystemService systemService)
         {
+            SystemService = systemService;
         }
 
         private string GetDatabaseName(string applicationDataPath, string applicationName) => Path.Combine(applicationDataPath, applicationName + ".sqlite");
 
-        public SystemWebAppService(string applicationName, params string[] oldApplicationNames) : base(applicationName)
+        public DataAccessWebAppService(ISystemService systemService, params string[] oldApplicationNames) : this(systemService)
         {
             var currentDatabaseName = GetDatabaseName(ApplicationDataPath, ApplicationName);
 
-            if (! File.Exists(currentDatabaseName))
+            if (!File.Exists(currentDatabaseName))
             {
                 foreach (var oldApplicationName in oldApplicationNames.AsEnumerable().Reverse())
                 {
@@ -35,7 +38,13 @@ namespace BarLauncher.WebApp.Lib.Service
             }
         }
 
-        public string DatabasePath => this.ApplicationDataPath;
+        private string ApplicationDataPath => SystemService.ApplicationDataPath;
+
+        private string ApplicationName => SystemService.ApplicationName;
+
+        public string DatabasePath => ApplicationDataPath;
+
+        public string DatabaseName => ApplicationName;
 
         public string GetExportPath() => ApplicationDataPath;
 

@@ -10,12 +10,15 @@ using BarLauncher.WebApp.Lib.Core.Service;
 using BarLauncher.WebApp.Lib.DomainModel;
 using BarLauncher.WebApp.Lib.Service;
 using BarLauncher.WebApp.Test.Mock.Service;
+using BarLauncher.EasyHelper.Core.Service;
+using BarLauncher.EasyHelper.Test.Mock.Service;
 
 namespace BarLauncher.WebApp.Test.NUnit
 {
     public class WebAppItemRepositoryTests
     {
-        private ISystemWebAppService SystemWebAppService { get; set; }
+        private ISystemService SystemService { get; set; }
+        private IDataAccessWebAppService DataAccessWebAppService { get; set; }
 
         private IDataAccessService DataAccessService { get; set; }
 
@@ -24,12 +27,13 @@ namespace BarLauncher.WebApp.Test.NUnit
         [SetUp]
         public void Setup()
         {
-            SystemWebAppService = new SystemWebAppServiceMock
+            SystemService = new SystemServiceMock
             {
                 ApplicationDataPath = Helper.GetTestPath(),
                 ApplicationName = "TestDatabase",
             };
-            DataAccessService = DataAccessSQLite.GetService(SystemWebAppService);
+            DataAccessWebAppService = new DataAccessWebAppServiceMock(SystemService);
+            DataAccessService = DataAccessSQLite.GetService(DataAccessWebAppService);
             WebAppItemRepository = new WebAppItemRepository(DataAccessService);
         }
 
@@ -43,7 +47,7 @@ namespace BarLauncher.WebApp.Test.NUnit
 
             WebAppItemRepository = null;
             DataAccessService = null;
-            SystemWebAppService = null;
+            SystemService = null;
         }
 
         public void Init()

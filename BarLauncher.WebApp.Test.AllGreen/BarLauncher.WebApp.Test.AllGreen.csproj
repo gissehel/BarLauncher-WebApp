@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    <Import Project="..\Common.targets"/>
+    <Import Project="..\Common.targets" />
 
     <PropertyGroup>
         <TargetFramework>net48</TargetFramework>
@@ -15,8 +15,8 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="BarLauncher.EasyHelper" Version="2.0.2" />
-        <PackageReference Include="BarLauncher.EasyHelper.Test.Mock" Version="2.0.2" />
+        <PackageReference Include="BarLauncher.EasyHelper" Version="2.0.3" />
+        <PackageReference Include="BarLauncher.EasyHelper.Test.Mock" Version="2.0.3" />
     </ItemGroup>
 
     <ItemGroup>
