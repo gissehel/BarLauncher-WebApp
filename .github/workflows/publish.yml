@@ -33,11 +33,22 @@ jobs:
                 dotnet.exe build ${{ env.SOLUTION_NAME }} -c Release
 
                 cd "BarLauncher.WebApp.Wox/bin/Release/net48"
-                7z a -tzip "../../../../BarLauncher.WebApp.Wox-${{ env.VERSION_LABEL }}.zip" "*"
+                7z a -tzip "../../../../BarLauncher.WebApp.Wox-${{ env.VERSION_LABEL }}.wox" "*"
                 cd "../../../.."
 
             - name: Upload Artifacts
               uses: actions/upload-artifact@v2
               with:
-                name: "BarLauncher.WebApp.Wox-${{ env.VERSION_LABEL }}.wox"
-                path: "BarLauncher.WebApp.Wox-${{ env.VERSION_LABEL }}.zip"
+                name: "BarLauncher.WebApp.Wox-${{ env.VERSION_LABEL }}"
+                path: "BarLauncher.WebApp.Wox-${{ env.VERSION_LABEL }}.wox"
+
+
+            - name: "Create release"
+              if: "success() && contains(github.ref, 'refs/tags')"
+              uses: "softprops/action-gh-release@v1"
+              with:
+                  body:
+                  files: |
+                    BarLauncher.WebApp.Wox-${{ env.VERSION_LABEL }}.wox
+                  draft: false
+                  prerelease: false
