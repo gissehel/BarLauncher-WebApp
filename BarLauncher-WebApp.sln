@@ -3,15 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BarLauncher.WebApp.Lib", "BarLauncher.WebApp.Lib\BarLauncher.WebApp.Lib.csproj", "{7C78E8C3-A048-48B9-9774-CF126D2F2F06}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BarLauncher.WebApp.Lib", "BarLauncher.WebApp.Lib\BarLauncher.WebApp.Lib.csproj", "{7C78E8C3-A048-48B9-9774-CF126D2F2F06}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BarLauncher.WebApp.Wox", "BarLauncher.WebApp.Wox\BarLauncher.WebApp.Wox.csproj", "{3F63B126-FD07-432F-A53E-37A60E4DEBF0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BarLauncher.WebApp.Wox", "BarLauncher.WebApp.Wox\BarLauncher.WebApp.Wox.csproj", "{3F63B126-FD07-432F-A53E-37A60E4DEBF0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BarLauncher.WebApp.Test.Mock", "BarLauncher.WebApp.Test.Mock\BarLauncher.WebApp.Test.Mock.csproj", "{CF94A469-C3FF-4C5B-9D07-89FC332345F8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BarLauncher.WebApp.Test.NUnit", "BarLauncher.WebApp.Test.NUnit\BarLauncher.WebApp.Test.NUnit.csproj", "{5337134E-6642-4AC0-8AC6-BA5743700B5F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BarLauncher.WebApp.Test.AllGreen", "BarLauncher.WebApp.Test.AllGreen\BarLauncher.WebApp.Test.AllGreen.csproj", "{88290DBA-1D87-461C-9B57-2BA3070678D6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BarLauncher.WebApp.Flow.Launcher", "BarLauncher.WebApp.Flow.Launcher\BarLauncher.WebApp.Flow.Launcher.csproj", "{6662037C-B557-4A5E-B2A8-5A98DD51D484}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{88290DBA-1D87-461C-9B57-2BA3070678D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{88290DBA-1D87-461C-9B57-2BA3070678D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{88290DBA-1D87-461C-9B57-2BA3070678D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6662037C-B557-4A5E-B2A8-5A98DD51D484}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6662037C-B557-4A5E-B2A8-5A98DD51D484}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6662037C-B557-4A5E-B2A8-5A98DD51D484}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6662037C-B557-4A5E-B2A8-5A98DD51D484}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -31,17 +31,24 @@ jobs:
             - name: build ${{ env.SOLUTION_NAME }} (Version ${{ env.VERSION_LABEL }})
               run: |
                 dotnet.exe build ${{ env.SOLUTION_NAME }} -c Release
+                dotnet.exe publish BarLauncher.WebApp.Wox/BarLauncher.WebApp.Wox.csproj -c Release
+                dotnet.exe publish BarLauncher.WebApp.Flow.Launcher/BarLauncher.WebApp.Flow.Launcher.csproj -c Release -r win-x64
 
-                cd "BarLauncher.WebApp.Wox/bin/Release/net48"
-                7z a -tzip "../../../../BarLauncher.WebApp.Wox-${{ env.VERSION_LABEL }}.wox" "*"
-                cd "../../../.."
+                cd "BarLauncher.WebApp.Wox/bin/Release/net48/publish"
+                7z a -tzip "../../../../../BarLauncher.WebApp.Wox-${{ env.VERSION_LABEL }}.wox" "*"
+                cd "../../../../.."
 
-            - name: Upload Artifacts
+                cd "BarLauncher.WebApp.Flow.Launcher/bin/Release/net5.0-windows/win-x64/publish"
+                7z a -tzip "../../../../../../BarLauncher.WebApp.Flow.Launcher-${{ env.VERSION_LABEL }}.zip" "*"
+                cd "../../../../../.."
+
+            - name: "Upload Artifacts"
               uses: actions/upload-artifact@v2
               with:
-                name: "BarLauncher.WebApp.Wox-${{ env.VERSION_LABEL }}"
-                path: "BarLauncher.WebApp.Wox-${{ env.VERSION_LABEL }}.wox"
-
+                name: "BarLauncher-WebApp-${{ env.VERSION_LABEL }}"
+                path: |
+                  BarLauncher.WebApp.Wox-${{ env.VERSION_LABEL }}.wox
+                  BarLauncher.WebApp.Flow.Launcher-${{ env.VERSION_LABEL }}.zip
 
             - name: "Create release"
               if: "success() && contains(github.ref, 'refs/tags')"
@@ -50,5 +57,6 @@ jobs:
                   body:
                   files: |
                     BarLauncher.WebApp.Wox-${{ env.VERSION_LABEL }}.wox
+                    BarLauncher.WebApp.Flow.Launcher-${{ env.VERSION_LABEL }}.zip
                   draft: false
                   prerelease: false
