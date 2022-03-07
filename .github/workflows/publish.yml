@@ -1,0 +1,33 @@
+name: build and publish
+
+on:
+    push:
+        branches:
+            - master
+        tags:
+            - 'v*'
+
+env:
+    SOLUTION_NAME: 'BarLauncher-WebApp.sln' # set this to your application's name
+    VERSION: '${{ github.event.ref }}'
+
+jobs:
+    build:
+        name: Build and deploy
+        runs-on: windows-latest
+        steps:
+            - uses: actions/checkout@v2
+
+            - name: build ${{ env.SOLUTION_NAME }}
+              run: |
+                dotnet.exe build ${{ env.SOLUTION_NAME }}
+
+                cd "BarLauncher.WebApp.Wox/bin/Release/net48/publish"
+                7z a -tzip "../../../../../BarLauncher.WebApp.Wox-${{ env.VERSION }}.zip" "*"
+                cd "../../../../.."
+
+            - name: Upload Artifacts
+              uses: actions/upload-artifact@v2
+              with:
+                name: "BarLauncher.WebApp.Wox-${{ env.VERSION }}.zip"
+                path: "BarLauncher.WebApp.Wox-${{ env.VERSION }}.zip"
