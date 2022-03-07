@@ -9,7 +9,7 @@ on:
 
 env:
     SOLUTION_NAME: 'BarLauncher-WebApp.sln' # set this to your application's name
-    VERSION: '${{ github.event.ref }}'
+    VERSION: '${{ github.ref_name }}'
 
 jobs:
     build:
@@ -18,16 +18,26 @@ jobs:
         steps:
             - uses: actions/checkout@v2
 
-            - name: build ${{ env.SOLUTION_NAME }}
+            - name: Get the version (for tags)
+              if: "contains(github.ref, 'refs/tags')"
+              shell: bash
+              run: echo "VERSION_LABEL=${GITHUB_REF#refs/tags/v}" >> "${GITHUB_ENV}"
+
+            - name: Get the version (for branches)
+              if: "!contains(github.ref, 'refs/tags')"
+              shell: bash
+              run: echo "VERSION_LABEL=${GITHUB_REF#refs/heads/}-latest" >> "${GITHUB_ENV}"
+
+            - name: build ${{ env.SOLUTION_NAME }} (Version ${{ env.VERSION_LABEL }})
               run: |
-                dotnet.exe build ${{ env.SOLUTION_NAME }}
+                dotnet.exe build ${{ env.SOLUTION_NAME }} -c Release
 
                 cd "BarLauncher.WebApp.Wox/bin/Release/net48/publish"
-                7z a -tzip "../../../../../BarLauncher.WebApp.Wox-${{ env.VERSION }}.zip" "*"
+                7z a -tzip "../../../../../BarLauncher.WebApp.Wox-${{ env.VERSION_LABEL }}.zip" "*"
                 cd "../../../../.."
 
             - name: Upload Artifacts
               uses: actions/upload-artifact@v2
               with:
-                name: "BarLauncher.WebApp.Wox-${{ env.VERSION }}.zip"
-                path: "BarLauncher.WebApp.Wox-${{ env.VERSION }}.zip"
+                name: "BarLauncher.WebApp.Wox-${{ env.VERSION_LABEL }}.wox"
+                path: "BarLauncher.WebApp.Wox-${{ env.VERSION_LABEL }}.zip"
