@@ -1,6 +1,6 @@
 <Project>
 	<PropertyGroup>
-		<Version>2.0.4</Version>
+		<Version>2.0.5</Version>
         <Authors>gissehel</Authors>
         <Copyright>MIT</Copyright>
 	</PropertyGroup>
