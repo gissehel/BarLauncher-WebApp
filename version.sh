@@ -28,7 +28,7 @@ new_release() {
     git tag "v${new_version}"
     write_version "${new_dev_version}"
     git add .
-    git commit -m "VERSION : Starting new developement version ${new_version}"
+    git commit -m "VERSION : Starting new developement version ${new_dev_version}"
     git push
     git push --tags
 }
