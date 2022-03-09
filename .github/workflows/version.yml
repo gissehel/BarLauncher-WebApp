@@ -1,0 +1,18 @@
+name: Create a new version/release
+
+on:
+    workflow_dispatch:
+
+jobs:
+    new_version:
+        name: Create a new version
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+
+            - name: Create a new version
+              shell: bash
+              run: |
+                  git config --global user.name "Gissehel"
+                  git config --global user.email "gissehel@users.noreply.github.com"
+                  ./version.sh new_release
