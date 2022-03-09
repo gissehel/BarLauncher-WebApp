@@ -23,14 +23,14 @@ new_release() {
     local new_version="${MAJOR}.${MINOR}.${new_release}"
     local new_dev_version="${MAJOR}.${MINOR}.${new_dev_release}"
     write_version "${new_version}"
-    #git add .
-    #git commit -m "VERSION : ${new_version}"
-    #git tag "v${new_version}"
+    git add .
+    git commit -m "VERSION : ${new_version}"
+    git tag "v${new_version}"
     write_version "${new_dev_version}"
-    #git add .
-    #git commit -m "VERSION : Starting new developement version ${new_version}"
-    #git push
-    #git push --tags
+    git add .
+    git commit -m "VERSION : Starting new developement version ${new_version}"
+    git push
+    git push --tags
 }
 
 ensure_version() {
