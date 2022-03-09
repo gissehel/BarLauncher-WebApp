@@ -9,10 +9,10 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2
+              with:
+                token: ${{ secrets.TOKEN_FOR_GIT }}
 
             - name: Create a new version
-              env:
-                GITHUB_TOKEN: ${{ secrets.TOKEN_FOR_GIT }}
               shell: bash
               run: |
                   git config --global user.name "Gissehel"
