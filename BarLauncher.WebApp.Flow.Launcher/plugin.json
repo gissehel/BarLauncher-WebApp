@@ -4,7 +4,7 @@
   "Name": "WebApp launcher",
   "Description": "Start a URL in a webapp mode",
   "Author": "gissehel",
-  "Version": "2.0.11",
+  "Version": "2.0.12",
   "Language": "csharp",
   "Website": "https://github.com/gissehel/BarLauncher-WebApp",
   "IcoPath": "BarLauncher-WebApp-64.png",
