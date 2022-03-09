@@ -15,4 +15,4 @@ jobs:
               run: |
                   git config --global user.name "Gissehel"
                   git config --global user.email "gissehel@users.noreply.github.com"
-                  ./version.sh new_release
+                  bash ./version.sh new_release
