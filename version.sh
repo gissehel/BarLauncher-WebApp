@@ -17,7 +17,7 @@ write_version() {
     sed -i -e 's/"Version":.*,/"Version": "'"${new_version}"'",/' */plugin.json
 }
 
-new_release() {
+new_offline_release() {
     let new_release="${RELEASE}+1"
     let new_dev_release="${RELEASE}+2"
     local new_version="${MAJOR}.${MINOR}.${new_release}"
@@ -29,6 +29,10 @@ new_release() {
     write_version "${new_dev_version}"
     git add .
     git commit -m "VERSION : Starting new developement version ${new_dev_version}"
+}
+
+new_release() {
+    new_offline_release
     git push
     git push --tags
 }
@@ -41,6 +45,9 @@ ensure_version() {
 case "${1}" in
     new_release)
         new_release
+        ;;
+    new_offline_release)
+        new_offline_release
         ;;
     ensure_version)
         ensure_version
