@@ -44,7 +44,7 @@ namespace BarLauncher.WebApp.Test.AllGreen.Helper
             IWebAppService webAppService = new WebAppService(dataAccessService, webAppItemRepository, webAppConfigurationRepository, systemService, dataAccessWebAppService, fileGeneratorService, fileReaderService, helperService, applicationInformationService);
             IBarLauncherResultFinder barLauncherWebAppResultFinder = new WebAppResultFinder(barLauncherContextService, webAppService, helperService, applicationInformationService, systemService);
 
-            systemService.ApplicationDataPath = GetApplicationDataPath();
+            systemService.ApplicationDataPath = TestPath;
 
             BarLauncherContextService = barLauncherContextService;
             QueryService = queryService;
