@@ -17,14 +17,15 @@ namespace BarLauncher.WebApp.Test.AllGreen.Helper
         public SystemServiceMock SystemService { get; set; }
         public DataAccessWebAppServiceMock DataAccessWebAppService { get; set; }
         public IBarLauncherResultFinder BarLauncherWebAppResultFinder { get; set; }
-        private IWebAppService WebAppService { get; set; }
+        public IWebAppService WebAppService { get; set; }
         public IHelperService HelperService { get; set; }
         public FileGeneratorServiceMock FileGeneratorService { get; set; }
         public FileReaderServiceMock FileReaderService { get; set; }
         public ApplicationInformationServiceMock ApplicationInformationService { get; set; }
         private string TestName { get; set; }
 
-        public string TestPath => SystemService.ApplicationDataPath;
+        private string testPath = null;
+        public string TestPath => testPath ?? (testPath = GetApplicationDataPath());
 
         public void Init(string testName)
         {

@@ -3,6 +3,7 @@ using AllGreen.Lib.Core.DomainModel.Script;
 using AllGreen.Lib.Core.DomainModel.ScriptResult;
 using AllGreen.Lib.DomainModel;
 using AllGreen.Lib.DomainModel.ScriptResult;
+using AllGreen.Lib.Engine.Service;
 using System.IO;
 using System.Text;
 
@@ -24,11 +25,8 @@ namespace BarLauncher.WebApp.Test.AllGreen.Helper
         public void OnTestStop()
         {
             var testScriptResult = TestScriptResult as TestScriptResult<WebAppContext>;
-            var path = Path.Combine(ApplicationStarter.TestPath, string.Format("{0}.agout", testScriptResult.TestScript.Name));
-            using (var writer = new StreamWriter(path, false, new UTF8Encoding(false)))
-            {
-                writer.Write(testScriptResult.GetPipedName(PipedNameOptions.Detailled));
-            }
+            (new JsonOutputService()).Output(testScriptResult, ApplicationStarter.TestPath, testScriptResult.TestScript.Name);
+            (new TextOutputService()).Output(testScriptResult, ApplicationStarter.TestPath, testScriptResult.TestScript.Name);
         }
     }
 }

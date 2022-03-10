@@ -6,7 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AllGreen.Lib" Version="1.0.1" />
+        <PackageReference Include="AllGreen.Lib" Version="2.0.4" />
         <PackageReference Include="FluentDataAccess" Version="2.1.1" />
         <PackageReference Include="FluentDataAccess.SQLite" Version="2.1.1" />
         <PackageReference Include="NUnit" Version="3.13.2" />
