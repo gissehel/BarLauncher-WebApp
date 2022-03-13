@@ -67,7 +67,7 @@ namespace BarLauncher.WebApp.Test.AllGreen.Helper
         private static string GetThisAssemblyDirectory()
         {
             var assembly = Assembly.GetExecutingAssembly();
-            var thisAssemblyCodeBase = assembly.CodeBase;
+            var thisAssemblyCodeBase = assembly.Location;
             var thisAssemblyDirectory = Path.GetDirectoryName(new Uri(thisAssemblyCodeBase).LocalPath);
 
             return thisAssemblyDirectory;

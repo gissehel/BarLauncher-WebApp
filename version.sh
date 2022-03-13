@@ -13,7 +13,7 @@ RELEASE="${MINOR_COMP%%[-._]*}"
 write_version() {
     local new_version="$1"
     echo "${new_version}" > VERSION
-    echo "<Project><PropertyGroup><Version>${new_version}</Version></PropertyGroup></Project>" > Version.targets
+    echo "<Project><PropertyGroup><Version>${new_version}</Version></PropertyGroup></Project>" > "Version.props"
     sed -i -e 's/"Version":.*,/"Version": "'"${new_version}"'",/' */plugin.json
 }
 

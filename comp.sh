@@ -1,6 +1,5 @@
-rm -rf */bin */obj
+rm -rf */bin */obj */build build
 
-dotnet.exe publish BarLauncher.WebApp.Lib/BarLauncher.WebApp.Lib.csproj -c Release
-dotnet.exe publish BarLauncher.WebApp.Wox/BarLauncher.WebApp.Wox.csproj -c Release
-dotnet.exe publish BarLauncher.WebApp.Flow.Launcher/BarLauncher.WebApp.Flow.Launcher.csproj -c Release -r win-x64
+dotnet.exe publish BarLauncher.WebApp.Wox/BarLauncher.WebApp.Wox.csproj -c Debug
+dotnet.exe publish BarLauncher.WebApp.Flow.Launcher/BarLauncher.WebApp.Flow.Launcher.csproj -c Debug -r win-x64
 

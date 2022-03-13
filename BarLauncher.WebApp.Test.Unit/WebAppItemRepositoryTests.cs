@@ -1,6 +1,5 @@
 using FluentDataAccess;
 using FluentDataAccess.Service;
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,9 +11,11 @@ using BarLauncher.WebApp.Lib.Service;
 using BarLauncher.WebApp.Test.Mock.Service;
 using BarLauncher.EasyHelper.Core.Service;
 using BarLauncher.EasyHelper.Test.Mock.Service;
+using Xunit;
 
-namespace BarLauncher.WebApp.Test.NUnit
+namespace BarLauncher.WebApp.Test.Unit
 {
+    [SetContext]
     public class WebAppItemRepositoryTests
     {
         private ISystemService SystemService { get; set; }
@@ -24,8 +25,7 @@ namespace BarLauncher.WebApp.Test.NUnit
 
         private IWebAppItemRepository WebAppItemRepository { get; set; }
 
-        [SetUp]
-        public void Setup()
+        private void SetUp()
         {
             SystemService = new SystemServiceMock
             {
@@ -37,8 +37,7 @@ namespace BarLauncher.WebApp.Test.NUnit
             WebAppItemRepository = new WebAppItemRepository(DataAccessService);
         }
 
-        [TearDown]
-        public void TearDown()
+        private void TearDown()
         {
             if (DataAccessService != null)
             {
@@ -50,7 +49,7 @@ namespace BarLauncher.WebApp.Test.NUnit
             SystemService = null;
         }
 
-        public void Init()
+        private void Init()
         {
             DataAccessService.Init();
             WebAppItemRepository.Init();
@@ -68,8 +67,8 @@ namespace BarLauncher.WebApp.Test.NUnit
         private void EnsureSchema()
         {
             var schema = Helper.GetSchemaForTable(DataAccessService, "webapp_item");
-            Assert.IsNotNull(schema);
-            Assert.AreEqual("CREATE TABLE webapp_item (id integer primary key, url text, keywords text, search text, profile text)", schema);
+            Assert.NotNull(schema);
+            Assert.Equal("CREATE TABLE webapp_item (id integer primary key, url text, keywords text, search text, profile text)", schema);
         }
 
         private void CreateOldSchema()
@@ -81,72 +80,83 @@ namespace BarLauncher.WebApp.Test.NUnit
             DataAccessService.GetQuery("create table if not exists webapp_item (id integer primary key, url text, keywords text, search text, profile text);").Execute();
         }
 
-        [Test]
+        [Fact]
         public void UpgradeFromScratch()
         {
+            SetUp();
             Init();
             EnsureSchema();
             var items = GetWebAppItems();
-            Assert.AreEqual(0, items.Count());
+            Assert.Empty(items);
+            TearDown();
         }
 
-        [Test]
+        [Fact]
         public void UpgradeFromOldVersionWithoutData()
         {
+            SetUp();
             DataAccessService.Init();
             CreateOldSchema();
             WebAppItemRepository.Init();
             EnsureSchema();
             var items = GetWebAppItems();
-            Assert.AreEqual(0, items.Count());
+            Assert.Empty(items);
+            TearDown();
         }
 
-        [Test]
+        [Fact]
         public void UpgradeFromNewVersionWithoutData()
         {
+            SetUp();
             DataAccessService.Init();
             CreateNewSchema();
             WebAppItemRepository.Init();
             EnsureSchema();
             var items = GetWebAppItems();
-            Assert.AreEqual(0, items.Count());
+            Assert.Empty(items);
+            TearDown();
         }
 
-        [Test]
+        [Fact]
         public void UpgradeFromOldVersionWithData()
         {
+            SetUp();
             DataAccessService.Init();
             CreateOldSchema();
             DataAccessService.GetQuery("insert into webapp_item values (1, 'https://url1.dom/x1', 'keywords1', 'search1');").Execute();
             WebAppItemRepository.Init();
             EnsureSchema();
             var items = GetWebAppItems();
-            Assert.AreEqual(1, items.Count());
-            Assert.AreEqual(1, items.First().Id);
-            Assert.AreEqual("https://url1.dom/x1", items.First().Url);
-            Assert.AreEqual("keywords1", items.First().Keywords);
-            Assert.AreEqual("default", items.First().Profile);
+            Assert.Single(items);
+            Assert.Equal(1, items.First().Id);
+            Assert.Equal("https://url1.dom/x1", items.First().Url);
+            Assert.Equal("keywords1", items.First().Keywords);
+            Assert.Equal("default", items.First().Profile);
+            TearDown();
         }
 
-        [Test]
+        [Fact]
         public void UpgradeFromNewVersionWithData()
         {
+            SetUp();
             DataAccessService.Init();
             CreateNewSchema();
             DataAccessService.GetQuery("insert into webapp_item values (1, 'https://url1.dom/x1', 'keywords1', 'search1', 'mank');").Execute();
             WebAppItemRepository.Init();
             EnsureSchema();
             var items = GetWebAppItems();
-            Assert.AreEqual(1, items.Count());
-            Assert.AreEqual(1, items.First().Id);
-            Assert.AreEqual("https://url1.dom/x1", items.First().Url);
-            Assert.AreEqual("keywords1", items.First().Keywords);
-            Assert.AreEqual("mank", items.First().Profile);
+            Assert.Single(items);
+            Assert.Equal(1, items.First().Id);
+            Assert.Equal("https://url1.dom/x1", items.First().Url);
+            Assert.Equal("keywords1", items.First().Keywords);
+            Assert.Equal("mank", items.First().Profile);
+            TearDown();
         }
 
-        [Test]
+        [Fact]
         public void UpgradeFromOldVersionWithManyData()
         {
+            SetUp();
             DataAccessService.Init();
             CreateOldSchema();
             DataAccessService.GetQuery("insert into webapp_item values (1, 'https://url1.dom/x1', 'keywords1', 'search1');").Execute();
@@ -155,24 +165,26 @@ namespace BarLauncher.WebApp.Test.NUnit
             WebAppItemRepository.Init();
             EnsureSchema();
             var items = GetWebAppItems();
-            Assert.AreEqual(3, items.Count());
-            Assert.AreEqual(1, items.First().Id);
-            Assert.AreEqual("https://url1.dom/x1", items.First().Url);
-            Assert.AreEqual("keywords1", items.First().Keywords);
-            Assert.AreEqual("default", items.First().Profile);
-            Assert.AreEqual(2, items.ElementAt(1).Id);
-            Assert.AreEqual("https://url2.dom/x2", items.ElementAt(1).Url);
-            Assert.AreEqual("keywords2", items.ElementAt(1).Keywords);
-            Assert.AreEqual("default", items.ElementAt(1).Profile);
-            Assert.AreEqual(3, items.ElementAt(2).Id);
-            Assert.AreEqual("https://url3.dom/x3", items.ElementAt(2).Url);
-            Assert.AreEqual("keywords3", items.ElementAt(2).Keywords);
-            Assert.AreEqual("default", items.ElementAt(2).Profile);
+            Assert.Equal(3, items.Count());
+            Assert.Equal(1, items.First().Id);
+            Assert.Equal("https://url1.dom/x1", items.First().Url);
+            Assert.Equal("keywords1", items.First().Keywords);
+            Assert.Equal("default", items.First().Profile);
+            Assert.Equal(2, items.ElementAt(1).Id);
+            Assert.Equal("https://url2.dom/x2", items.ElementAt(1).Url);
+            Assert.Equal("keywords2", items.ElementAt(1).Keywords);
+            Assert.Equal("default", items.ElementAt(1).Profile);
+            Assert.Equal(3, items.ElementAt(2).Id);
+            Assert.Equal("https://url3.dom/x3", items.ElementAt(2).Url);
+            Assert.Equal("keywords3", items.ElementAt(2).Keywords);
+            Assert.Equal("default", items.ElementAt(2).Profile);
+            TearDown();
         }
 
-        [Test]
+        [Fact]
         public void UpgradeFromNewVersionWithManyData()
         {
+            SetUp();
             DataAccessService.Init();
             CreateNewSchema();
             DataAccessService.GetQuery("insert into webapp_item values (1, 'https://url1.dom/x1', 'keywords1', 'search1', 'mank');").Execute();
@@ -181,19 +193,20 @@ namespace BarLauncher.WebApp.Test.NUnit
             WebAppItemRepository.Init();
             EnsureSchema();
             var items = GetWebAppItems();
-            Assert.AreEqual(3, items.Count());
-            Assert.AreEqual(1, items.First().Id);
-            Assert.AreEqual("https://url1.dom/x1", items.First().Url);
-            Assert.AreEqual("keywords1", items.First().Keywords);
-            Assert.AreEqual("mank", items.First().Profile);
-            Assert.AreEqual(2, items.ElementAt(1).Id);
-            Assert.AreEqual("https://url2.dom/x2", items.ElementAt(1).Url);
-            Assert.AreEqual("keywords2", items.ElementAt(1).Keywords);
-            Assert.AreEqual("default", items.ElementAt(1).Profile);
-            Assert.AreEqual(3, items.ElementAt(2).Id);
-            Assert.AreEqual("https://url3.dom/x3", items.ElementAt(2).Url);
-            Assert.AreEqual("keywords3", items.ElementAt(2).Keywords);
-            Assert.AreEqual("shon", items.ElementAt(2).Profile);
+            Assert.Equal(3, items.Count());
+            Assert.Equal(1, items.First().Id);
+            Assert.Equal("https://url1.dom/x1", items.First().Url);
+            Assert.Equal("keywords1", items.First().Keywords);
+            Assert.Equal("mank", items.First().Profile);
+            Assert.Equal(2, items.ElementAt(1).Id);
+            Assert.Equal("https://url2.dom/x2", items.ElementAt(1).Url);
+            Assert.Equal("keywords2", items.ElementAt(1).Keywords);
+            Assert.Equal("default", items.ElementAt(1).Profile);
+            Assert.Equal(3, items.ElementAt(2).Id);
+            Assert.Equal("https://url3.dom/x3", items.ElementAt(2).Url);
+            Assert.Equal("keywords3", items.ElementAt(2).Keywords);
+            Assert.Equal("shon", items.ElementAt(2).Profile);
+            TearDown();
         }
     }
 }

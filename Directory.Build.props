@@ -1,0 +1,15 @@
+<Project>
+    <Import Project="Version.props" />
+
+    <PropertyGroup>
+        <Authors>gissehel</Authors>
+        <Copyright>MIT</Copyright>
+        <OutputPath>..\build\$(MSBuildProjectName)\bin\$(Configuration)\</OutputPath>
+        <BaseIntermediateOutputPath>..\build\$(MSBuildProjectName)\obj\</BaseIntermediateOutputPath>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <DebugSymbols>false</DebugSymbols>
+        <DebugType>None</DebugType>
+    </PropertyGroup>
+</Project>

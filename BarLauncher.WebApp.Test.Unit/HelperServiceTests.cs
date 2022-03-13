@@ -1,70 +1,66 @@
-﻿using NUnit.Framework;
-using BarLauncher.WebApp.Lib.Core.Service;
+﻿using BarLauncher.WebApp.Lib.Core.Service;
 using BarLauncher.WebApp.Lib.Service;
+using Xunit;
 
-namespace BarLauncher.WebApp.Test.NUnit
+namespace BarLauncher.WebApp.Test.Unit
 {
     public class HelperServiceTests
     {
         private IHelperService HelperService { get; set; }
 
-        [SetUp]
-        public void Setup()
+        public HelperServiceTests()
         {
             HelperService = new HelperService();
         }
 
-        [TearDown]
-        public void TearDown()
-        {
-            HelperService = null;
-        }
-
-        [Test]
+        [Fact]
         public void ExtractNothingToExtract()
         {
             var keywords = "poide praf pido";
             string profile = null;
             Assert.False(HelperService.ExtractProfile(keywords, ref keywords, ref profile));
-            Assert.AreEqual("poide praf pido", keywords);
+            Assert.Equal("poide praf pido", keywords);
             Assert.Null(profile);
         }
-        [Test]
+
+        [Fact]
         public void ExtractValue()
         {
             var keywords = "poide praf pido [profile]";
             string profile = null;
             Assert.True(HelperService.ExtractProfile(keywords, ref keywords, ref profile));
-            Assert.AreEqual("poide praf pido", keywords);
-            Assert.AreEqual("profile", profile);
+            Assert.Equal("poide praf pido", keywords);
+            Assert.Equal("profile", profile);
         }
-        [Test]
+
+        [Fact]
         public void ExtractEmptyString()
         {
             var keywords = "poide praf pido []";
             string profile = null;
             Assert.False(HelperService.ExtractProfile(keywords, ref keywords, ref profile));
-            Assert.AreEqual("poide praf pido []", keywords);
+            Assert.Equal("poide praf pido []", keywords);
             Assert.Null(profile);
         }
-        [Test]
+
+        [Fact]
         public void ExtractBogusString()
         {
             var keywords = "poide praf pido [poide";
             string profile = null;
             Assert.False(HelperService.ExtractProfile(keywords, ref keywords, ref profile));
-            Assert.AreEqual("poide praf pido [poide", keywords);
+            Assert.Equal("poide praf pido [poide", keywords);
             Assert.Null(profile);
         }
 
-        [Test]
+        [Fact]
         public void ExtractOnlyProfile()
         {
             var keywords = "[poide]";
             string profile = null;
             Assert.True(HelperService.ExtractProfile(keywords, ref keywords, ref profile));
-            Assert.AreEqual("", keywords);
-            Assert.AreEqual("poide", profile);
+            Assert.Equal("", keywords);
+            Assert.Equal("poide", profile);
         }
     }
 }

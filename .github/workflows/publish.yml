@@ -3,13 +3,12 @@ name: build and publish
 on:
     push:
         branches:
-            - master
+            - '*'
         tags:
             - 'v*'
 
 env:
-    SOLUTION_NAME: 'BarLauncher-WebApp.sln' # set this to your application's name
-    VERSION: '${{ github.ref_name }}'
+    PLUGIN_BASE_NAME: 'WebApp'
 
 jobs:
     build:
@@ -18,45 +17,57 @@ jobs:
         steps:
             - uses: actions/checkout@v2
 
-            - name: Get the version (for tags)
-              if: "contains(github.ref, 'refs/tags')"
+            - name: Set various env vars
               shell: bash
-              run: echo "VERSION_LABEL=${GITHUB_REF#refs/tags/v}" >> "${GITHUB_ENV}"
-
-            - name: Get the version (for branches)
-              if: "!contains(github.ref, 'refs/tags')"
-              shell: bash
-              run: echo "VERSION_LABEL=${GITHUB_REF#refs/heads/}-latest" >> "${GITHUB_ENV}"
-
-            - name: build ${{ env.SOLUTION_NAME }} (Version ${{ env.VERSION_LABEL }})
               run: |
-                dotnet.exe build ${{ env.SOLUTION_NAME }} -c Release
-                dotnet.exe publish BarLauncher.WebApp.Wox/BarLauncher.WebApp.Wox.csproj -c Release
-                dotnet.exe publish BarLauncher.WebApp.Flow.Launcher/BarLauncher.WebApp.Flow.Launcher.csproj -c Release -r win-x64
+                  BASE_SOLUTION_NAME="BarLauncher-${{ env.PLUGIN_BASE_NAME }}"
+                  SOLUTION_NAME="${BASE_SOLUTION_NAME}.sln"
+                  BASE_WOX_PROJECT="BarLauncher.${{ env.PLUGIN_BASE_NAME }}.Wox"
+                  BASE_FLOW_LAUNCHER_PROJECT="BarLauncher.${{ env.PLUGIN_BASE_NAME }}.Flow.Launcher"
+                  echo "BASE_SOLUTION_NAME=${BASE_SOLUTION_NAME}" >> "${GITHUB_ENV}"
+                  echo "SOLUTION_NAME=${SOLUTION_NAME}" >> "${GITHUB_ENV}"
+                  echo "BASE_WOX_PROJECT=${BASE_WOX_PROJECT}" >> "${GITHUB_ENV}"
+                  echo "BASE_FLOW_LAUNCHER_PROJECT=${BASE_FLOW_LAUNCHER_PROJECT}" >> "${GITHUB_ENV}"
 
-                cd "BarLauncher.WebApp.Wox/bin/Release/net48/publish"
-                7z a -tzip "../../../../../BarLauncher.WebApp.Wox-${{ env.VERSION_LABEL }}.wox" "*"
-                cd "../../../../.."
+            - name: Get the version (for tags)
+              if: "startsWith(github.ref, 'refs/tags')"
+              shell: bash
+              run: echo "VERSION=$(cat VERSION)" >> "${GITHUB_ENV}"
 
-                cd "BarLauncher.WebApp.Flow.Launcher/bin/Release/net5.0-windows/win-x64/publish"
-                7z a -tzip "../../../../../../BarLauncher.WebApp.Flow.Launcher-${{ env.VERSION_LABEL }}.zip" "*"
-                cd "../../../../../.."
+            - name: Get the version (for normal commits)
+              if: "!startsWith(github.ref, 'refs/tags')"
+              shell: bash
+              run: echo "VERSION=$(cat VERSION)-$(date +%s)" >> "${GITHUB_ENV}"
 
-            - name: "Upload Artifacts"
+            - name: build ${{ env.BASE_SOLUTION_NAME }} (version ${{ env.VERSION }})
+              run: |
+                  dotnet.exe build ${{ env.BASE_SOLUTION_NAME }}.sln -c Release -p:VERSION=${{ env.VERSION }}
+                  dotnet.exe publish ${{ env.BASE_WOX_PROJECT }}/${{ env.BASE_WOX_PROJECT }}.csproj -c Release -p:VERSION=${{ env.VERSION }}
+                  dotnet.exe publish ${{ env.BASE_FLOW_LAUNCHER_PROJECT }}/${{ env.BASE_FLOW_LAUNCHER_PROJECT }}.csproj -c Release -r win-x64 -p:VERSION=${{ env.VERSION }}
+
+                  cd "build/${{ env.BASE_WOX_PROJECT }}/bin/Release/net48/publish"
+                  7z a -tzip "../../../../../../${{ env.BASE_WOX_PROJECT }}-${{ env.VERSION }}.wox" "*"
+                  cd "../../../../../.."
+                  
+                  cd "build/${{ env.BASE_FLOW_LAUNCHER_PROJECT }}/bin/Release/net5.0-windows/win-x64/publish"
+                  7z a -tzip "../../../../../../../${{ env.BASE_FLOW_LAUNCHER_PROJECT }}-${{ env.VERSION }}.zip" "*"
+                  cd "../../../../../../.."
+
+            - name: Upload Artifacts (version ${{ env.VERSION }})
               uses: actions/upload-artifact@v2
               with:
-                name: "BarLauncher-WebApp-${{ env.VERSION_LABEL }}"
-                path: |
-                  BarLauncher.WebApp.Wox-${{ env.VERSION_LABEL }}.wox
-                  BarLauncher.WebApp.Flow.Launcher-${{ env.VERSION_LABEL }}.zip
+                  name: "${{ env.BASE_SOLUTION_NAME }}-${{ env.VERSION }}"
+                  path: |
+                      ${{ env.BASE_WOX_PROJECT }}-${{ env.VERSION }}.wox
+                      ${{ env.BASE_FLOW_LAUNCHER_PROJECT }}-${{ env.VERSION }}.zip
 
             - name: "Create release"
-              if: "success() && contains(github.ref, 'refs/tags')"
+              if: "success() && startsWith(github.ref, 'refs/tags')"
               uses: "softprops/action-gh-release@v1"
               with:
                   body:
                   files: |
-                    BarLauncher.WebApp.Wox-${{ env.VERSION_LABEL }}.wox
-                    BarLauncher.WebApp.Flow.Launcher-${{ env.VERSION_LABEL }}.zip
+                      ${{ env.BASE_WOX_PROJECT }}-${{ env.VERSION }}.wox
+                      ${{ env.BASE_FLOW_LAUNCHER_PROJECT }}-${{ env.VERSION }}.zip
                   draft: false
                   prerelease: false

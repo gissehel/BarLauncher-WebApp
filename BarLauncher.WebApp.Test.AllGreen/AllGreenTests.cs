@@ -1,26 +1,28 @@
 ﻿using AllGreen.Lib;
 using AllGreen.Lib.Core.Engine.Service;
 using AllGreen.Lib.Engine.Service;
-using NUnit.Framework;
 using System.Collections.Generic;
 using System.Reflection;
 using BarLauncher.EasyHelper;
 using BarLauncher.WebApp.Test.AllGreen.Helper;
+using Xunit;
+using System.Linq;
 
 namespace BarLauncher.WebApp.Test.AllGreen
 {
     public class AllGreenTests
     {
-        private static ITestRunnerService _testRunnerService = new TestRunnerService();
+        private static readonly ITestRunnerService _testRunnerService = new TestRunnerService();
 
-        private static TestFinder<WebAppContext> _testFinder = new TestFinder<WebAppContext>
+        private static readonly TestFinder<WebAppContext> _testFinder = new TestFinder<WebAppContext>()
         {
             Assembly = Assembly.GetExecutingAssembly(),
         };
 
-        private static IEnumerable<string> GetTestScriptNames() => _testFinder.GetNames();
+        public static IEnumerable<object[]> GetTestScriptNames() => _testFinder.GetNames().Select(name => new object[] {name});
 
-        [TestCaseSource(nameof(GetTestScriptNames))]
+        [Theory]
+        [MemberData(nameof(GetTestScriptNames))]
         public void Run(string name)
         {
             var testScript = _testFinder.GetTestScript(name);
@@ -28,12 +30,12 @@ namespace BarLauncher.WebApp.Test.AllGreen
             {
                 var result = _testRunnerService.RunTest(testScript);
 
-                Assert.IsNotNull(result, "The test returned a null result. Is the test runnable ?");
-                Assert.IsTrue(result.Success, result.PipedName);
+                Assert.NotNull(result);
+                Assert.True(result.Success, result.PipedName);
             }
             else
             {
-                Assert.Fail("Don't know [{0}] as a test name !".FormatWith(name));
+                Assert.True(false,"Don't know [{0}] as a test name !".FormatWith(name));
             }
         }
     }

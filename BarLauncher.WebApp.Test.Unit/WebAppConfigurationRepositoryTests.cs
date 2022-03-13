@@ -1,21 +1,20 @@
 using FluentDataAccess;
-using FluentDataAccess.Service;
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using BarLauncher.WebApp.Lib.Core.Service;
 using BarLauncher.WebApp.Lib.DomainModel;
 using BarLauncher.WebApp.Lib.Service;
 using BarLauncher.WebApp.Test.Mock.Service;
 using BarLauncher.EasyHelper.Core.Service;
 using BarLauncher.EasyHelper.Test.Mock.Service;
+using Xunit;
 
-namespace BarLauncher.WebApp.Test.NUnit
+namespace BarLauncher.WebApp.Test.Unit
 {
-    public class WebAppConfigurationRepositoryTests
+
+    [SetContext]
+    public class WebAppConfigurationRepositoryTests 
     {
         private ISystemService SystemService { get; set; }
         private IDataAccessWebAppService DataAccessWebAppService { get; set; }
@@ -24,8 +23,8 @@ namespace BarLauncher.WebApp.Test.NUnit
 
         private IWebAppConfigurationRepository WebAppConfigurationRepository { get; set; }
 
-        [SetUp]
-        public void Setup()
+
+        private void SetUp()
         {
             SystemService = new SystemServiceMock
             {
@@ -37,8 +36,7 @@ namespace BarLauncher.WebApp.Test.NUnit
             WebAppConfigurationRepository = new WebAppConfigurationRepository(DataAccessService);
         }
 
-        [TearDown]
-        public void TearDown()
+        private void TearDown()
         {
             if (DataAccessService != null)
             {
@@ -50,7 +48,7 @@ namespace BarLauncher.WebApp.Test.NUnit
             SystemService = null;
         }
 
-        public void Init()
+        private void Init()
         {
             DataAccessService.Init();
             WebAppConfigurationRepository.Init();
@@ -72,83 +70,95 @@ namespace BarLauncher.WebApp.Test.NUnit
         private void EnsureSchema()
         {
             var schema = Helper.GetSchemaForTable(DataAccessService, "configuration");
-            Assert.IsNotNull(schema);
-            Assert.AreEqual("CREATE TABLE configuration (id integer primary key, profile text, launcher text, pattern text)", schema);
+            Assert.NotNull(schema);
+            Assert.Equal("CREATE TABLE configuration (id integer primary key, profile text, launcher text, pattern text)", schema);
         }
 
         private void CreateOldSchema()
         {
             DataAccessService.GetQuery("create table if not exists configuration (id integer primary key, launcher text, pattern text);").Execute();
         }
+
         private void CreateNewSchema()
         {
             DataAccessService.GetQuery("create table if not exists configuration (id integer primary key, profile text, launcher text, pattern text);").Execute();
         }
 
-        [Test]
+        [Fact]
         public void UpgradeFromScratch()
         {
+            SetUp();
             Init();
             EnsureSchema();
             var configurations = GetWebAppConfigurations();
-            Assert.AreEqual(0, configurations.Count());
+            Assert.Empty(configurations);
+            TearDown();
         }
 
-        [Test]
+        [Fact]
         public void UpgradeFromOldVersionWithoutData()
         {
+            SetUp();
             DataAccessService.Init();
             CreateOldSchema();
             WebAppConfigurationRepository.Init();
             EnsureSchema();
             var configurations = GetWebAppConfigurations();
-            Assert.AreEqual(0, configurations.Count());
+            Assert.Empty(configurations);
+            TearDown();
         }
 
-        [Test]
+        [Fact]
         public void UpgradeFromNewVersionWithoutData()
         {
+            SetUp();
             DataAccessService.Init();
             CreateNewSchema();
             WebAppConfigurationRepository.Init();
             EnsureSchema();
             var configurations = GetWebAppConfigurations();
-            Assert.AreEqual(0, configurations.Count());
+            Assert.Empty(configurations);
+            TearDown();
         }
 
-        [Test]
+        [Fact]
         public void UpgradeFromOldVersionWithData()
         {
+            SetUp();
             DataAccessService.Init();
             CreateOldSchema();
             DataAccessService.GetQuery("insert into configuration values (1, 'launcher', 'args');").Execute();
             WebAppConfigurationRepository.Init();
             EnsureSchema();
             var configurations = GetWebAppConfigurations();
-            Assert.AreEqual(1, configurations.Count());
-            Assert.AreEqual("default", configurations.First().Profile);
-            Assert.AreEqual("launcher", configurations.First().WebAppLauncher);
-            Assert.AreEqual("args", configurations.First().WebAppArgumentPattern);
+            Assert.Single(configurations);
+            Assert.Equal("default", configurations.First().Profile);
+            Assert.Equal("launcher", configurations.First().WebAppLauncher);
+            Assert.Equal("args", configurations.First().WebAppArgumentPattern);
+            TearDown();
         }
 
-        [Test]
+        [Fact]
         public void UpgradeFromNewVersionWithData()
         {
+            SetUp();
             DataAccessService.Init();
             CreateNewSchema();
             DataAccessService.GetQuery("insert into configuration values (1, 'default', 'launcher', 'args');").Execute();
             WebAppConfigurationRepository.Init();
             EnsureSchema();
             var configurations = GetWebAppConfigurations();
-            Assert.AreEqual(1, configurations.Count());
-            Assert.AreEqual("default", configurations.First().Profile);
-            Assert.AreEqual("launcher", configurations.First().WebAppLauncher);
-            Assert.AreEqual("args", configurations.First().WebAppArgumentPattern);
+            Assert.Single(configurations);
+            Assert.Equal("default", configurations.First().Profile);
+            Assert.Equal("launcher", configurations.First().WebAppLauncher);
+            Assert.Equal("args", configurations.First().WebAppArgumentPattern);
+            TearDown();
         }
 
-        [Test]
+        [Fact]
         public void UpgradeFromOldVersionWithManyData()
         {
+            SetUp();
             DataAccessService.Init();
             CreateOldSchema();
             DataAccessService.GetQuery("insert into configuration values (1, 'launcher', 'args');").Execute();
@@ -157,15 +167,17 @@ namespace BarLauncher.WebApp.Test.NUnit
             WebAppConfigurationRepository.Init();
             EnsureSchema();
             var configurations = GetWebAppConfigurations();
-            Assert.AreEqual(1, configurations.Count());
-            Assert.AreEqual("default", configurations.First().Profile);
-            Assert.AreEqual("launcher", configurations.First().WebAppLauncher);
-            Assert.AreEqual("args", configurations.First().WebAppArgumentPattern);
+            Assert.Single(configurations);
+            Assert.Equal("default", configurations.First().Profile);
+            Assert.Equal("launcher", configurations.First().WebAppLauncher);
+            Assert.Equal("args", configurations.First().WebAppArgumentPattern);
+            TearDown();
         }
 
-        [Test]
+        [Fact]
         public void UpgradeFromNewVersionWithManyData()
         {
+            SetUp();
             DataAccessService.Init();
             CreateNewSchema();
             DataAccessService.GetQuery("insert into configuration values (1, 'default', 'launcher', 'args');").Execute();
@@ -174,16 +186,17 @@ namespace BarLauncher.WebApp.Test.NUnit
             WebAppConfigurationRepository.Init();
             EnsureSchema();
             var configurations = GetWebAppConfigurations();
-            Assert.AreEqual(3, configurations.Count());
-            Assert.AreEqual("default", configurations.First().Profile);
-            Assert.AreEqual("launcher", configurations.First().WebAppLauncher);
-            Assert.AreEqual("args", configurations.First().WebAppArgumentPattern);
-            Assert.AreEqual("profile2", configurations.ElementAt(1).Profile);
-            Assert.AreEqual("launcher2", configurations.ElementAt(1).WebAppLauncher);
-            Assert.AreEqual("args2", configurations.ElementAt(1).WebAppArgumentPattern);
-            Assert.AreEqual("profile3", configurations.ElementAt(2).Profile);
-            Assert.AreEqual("launcher3", configurations.ElementAt(2).WebAppLauncher);
-            Assert.AreEqual("args3", configurations.ElementAt(2).WebAppArgumentPattern);
+            Assert.Equal(3, configurations.Count());
+            Assert.Equal("default", configurations.First().Profile);
+            Assert.Equal("launcher", configurations.First().WebAppLauncher);
+            Assert.Equal("args", configurations.First().WebAppArgumentPattern);
+            Assert.Equal("profile2", configurations.ElementAt(1).Profile);
+            Assert.Equal("launcher2", configurations.ElementAt(1).WebAppLauncher);
+            Assert.Equal("args2", configurations.ElementAt(1).WebAppArgumentPattern);
+            Assert.Equal("profile3", configurations.ElementAt(2).Profile);
+            Assert.Equal("launcher3", configurations.ElementAt(2).WebAppLauncher);
+            Assert.Equal("args3", configurations.ElementAt(2).WebAppArgumentPattern);
+            TearDown();
         }
     }
 }
