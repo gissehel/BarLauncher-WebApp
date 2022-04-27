@@ -15,11 +15,20 @@ namespace BarLauncher.WebApp.Lib.Service
             {
                 var profileStart = value.IndexOf("[") + 1;
                 var profileEnd = value.IndexOf("]", profileStart);
-                if (profileStart > 0 && profileEnd > profileStart)
+                if (profileStart > 0)
                 {
-                    profile = value.Substring(profileStart, profileEnd - profileStart);
-                    newValue = value.Substring(0, profileStart - 1).TrimEnd(' ');
-                    return true;
+                    if (profileEnd > profileStart)
+                    {
+                        profile = value.Substring(profileStart, profileEnd - profileStart);
+                        newValue = value.Substring(0, profileStart - 1).TrimEnd(' ');
+                        return true;
+                    }
+                    else if (profileEnd == -1)
+                    {
+                        profile = value.Substring(profileStart, value.Length - profileStart);
+                        newValue = value.Substring(0, profileStart - 1).TrimEnd(' ');
+                        return true;
+                    }
                 }
             }
             return false;

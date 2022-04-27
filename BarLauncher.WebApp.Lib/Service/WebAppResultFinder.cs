@@ -223,29 +223,43 @@ namespace BarLauncher.WebApp.Lib.Service
                     HelperService.ExtractProfile(keywords, ref keywords, ref profile);
                 }
                 keywords = keywords.Trim(' ');
+                var profiles = WebAppService.GetProfiles();
                 if (keywords == "")
                 {
-                    yield return GetActionResult
-                        (
-                            string.Format("add {0} [{1}]", url, profile),
-                            string.Format("Add the url {0} with no keywords and using profile [{1}]", url, profile),
-                            () =>
-                            {
-                                WebAppService.AddWebAppItem(url, keywords, profile);
-                            }
-                        );
+                    foreach (var existingProfile in profiles)
+                    {
+                        if (existingProfile.Contains(profile))
+                        {
+                            yield return GetActionResult
+                            (
+                                string.Format("add {0} [{1}]", url, existingProfile),
+                                string.Format("Add the url {0} with no keywords and using profile [{1}]", url, existingProfile),
+                                () =>
+                                {
+                                    WebAppService.AddWebAppItem(url, keywords, existingProfile);
+                                }
+                            );
+                        }
+                    }
+
                 }
                 else
                 {
-                    yield return GetActionResult
-                        (
-                            string.Format("add {0} {1} [{2}]", url, keywords, profile),
-                            string.Format("Add the url {0} with keywords ({1}) and using profile [{2}]", url, keywords, profile),
-                            () =>
-                            {
-                                WebAppService.AddWebAppItem(url, keywords, profile);
-                            }
-                        );
+                    foreach (var existingProfile in profiles)
+                    {
+                        if (existingProfile.Contains(profile))
+                        {
+                            yield return GetActionResult
+                            (
+                                string.Format("add {0} {1} [{2}]", url, keywords, existingProfile),
+                                string.Format("Add the url {0} with keywords ({1}) and using profile [{2}]", url, keywords, existingProfile),
+                                () =>
+                                {
+                                    WebAppService.AddWebAppItem(url, keywords, existingProfile);
+                                }
+                            );
+                        }
+                    }
                 }
             }
             else
