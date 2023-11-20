@@ -1,4 +1,4 @@
-﻿using FluentDataAccess;
+using FluentDataAccess;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -100,6 +100,10 @@ namespace BarLauncher.WebApp.Lib.Service
                 {
                     builder.Append("and ");
                 }
+                // "search" is the column in the database
+                // that holds both "url" and "keywords" put together in
+                // GetSearchField(url, keywords)
+                // This is why it has only matched words in the url or keywords in order
                 builder.Append("search like @param");
                 builder.Append(index.ToString());
                 builder.Append(" ");
@@ -115,7 +119,7 @@ namespace BarLauncher.WebApp.Lib.Service
                 dataAccessQuery = dataAccessQuery.WithParameter(parameterName, parameterValue);
                 index++;
             }
-            return dataAccessQuery
+            var results = dataAccessQuery
                 .Returning<WebAppItem>()
                 .Reading("id", (WebAppItem item, long value) => item.Id = value)
                 .Reading("url", (WebAppItem item, string value) => item.Url = value)
@@ -123,6 +127,43 @@ namespace BarLauncher.WebApp.Lib.Service
                 .Reading("profile", (WebAppItem item, string value) => item.Profile = value)
                 .Execute()
                 ;
+            // Check if the terms.Count() is not 0(for the "list" command)
+            // else, return results
+            // Replace "{q}" or "%s" with terms for web search query
+            if (terms.Count() != 0)
+            {
+                // Just search for the keyword/url in the "search" column
+                var query = "select id, url, keywords, profile from webapp_item where search like @param0 order by id";
+                var parameterValue = string.Format("%{0}%", terms.First().ToLower());
+                results = DataAccessService
+                .GetQuery(query)
+                .WithParameter("param0", parameterValue)
+                .Returning<WebAppItem>()
+                .Reading("id", (WebAppItem item, long value) => item.Id = value)
+                .Reading("url", (WebAppItem item, string value) =>
+                {
+                    // Check if there are "{q}" or "%s" for
+                    // to be replaced with web search query
+                    if (value.Contains("{q}") || value.Contains("%s"))
+                    {
+                        if (terms.Count() > 1)
+                        {
+                            var search_string = string.Join("%20", terms.Skip(1).ToArray());
+                            value = value.Replace("{q}", search_string).Replace("%s", search_string);
+                        }
+                    }
+                    item.Url = value;
+                })
+                .Reading("keywords", (WebAppItem item, string value) => item.Keywords = value)
+                .Reading("profile", (WebAppItem item, string value) => item.Profile = value)
+                .Execute()
+                ;
+                return results;
+            }
+            else
+            {
+                return results;
+            }
         }
 
         public WebAppItem GetItem(string url)
