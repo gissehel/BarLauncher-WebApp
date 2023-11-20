@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using BarLauncher.EasyHelper;
 using BarLauncher.EasyHelper.Core.Service;
@@ -328,6 +328,12 @@ namespace BarLauncher.WebApp.Lib.Service
             if (isValid)
             {
                 var url = query.SearchTerms[position];
+                // Added since Chrome requires the url scheme aka "http://" or "https://"
+                // Will break any other url schemes like "ftp://"
+                if (!url.MatchPatternCaseInsensitive("http://") && !url.MatchPatternCaseInsensitive("https://"))
+                {
+                    url = string.Format("https://{0}", url);
+                }
                 yield return GetActionResult
                 (
                     "open {0}".FormatWith(url),
