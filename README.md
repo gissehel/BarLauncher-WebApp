@@ -1,3 +1,4 @@
+## Modified to accept search terms for more functionality
 This is a modified version of the plugin to add the ability to search with commands.
 It adds the ability to use "{q}" or "%s" when adding new URLs, that will be replaced with terms for web search query when using that command.
 
