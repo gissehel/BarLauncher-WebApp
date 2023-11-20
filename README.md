@@ -1,8 +1,54 @@
-﻿# To install in Wox
+This is a modified version of the plugin to add the ability to search with commands.
+It adds the ability to use "{q}" or "%s" when adding new URLs, that will be replaced with terms for web search query when using that command.
+
+Example:
+```
+wap add https://duckduckgo.com/?q={q} ddg [default]
+```
+When using that command:
+```
+wap ddg banana split
+```
+Resulting URL used:
+```
+https://duckduckgo.com/?q=banana%20split
+```
+
+Another example:
+```
+wap add https://time.is/?q={q} time [default]
+```
+When using that command:
+```
+wap time paris france
+```
+Resulting URL used:
+```
+https://time.is/?q=paris
+```
+
+Yet another example:
+```
+wap add https://www.urbandictionary.com/define.php?term={q} ud urban urbandictionary [default]
+```
+When using that command:
+```
+wap ud snooze
+```
+Resulting URL used:
+```
+https://www.urbandictionary.com/define.php?term=snooze
+```
+
+# To install in Wox
+
+Follow the original method to install:
 
 ```
 wpm install WebApp launcher
 ```
+
+Then, download the zip file and extract it over the files in the plugin folder say yes if it asks about overwriting files, since this updates 2 DLLs and 2 other files.
 
 # Wox WebApp plugin
 
