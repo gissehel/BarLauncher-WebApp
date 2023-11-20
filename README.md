@@ -47,8 +47,22 @@ Follow the original method to install:
 ```
 wpm install WebApp launcher
 ```
+## Find your plugin directory
+- Open Wox settings
+  - In the system tray find the Wox Icon
+  - Right click on it
+  - Click "Settings"
+- Click on the "Plugin" tab
+- Find and click "WebApp launcher" in the list on the left
+- Click "Plugin directory" on the right
 
-Then, download the zip file and extract it over the files in the plugin folder say yes if it asks about overwriting files, since this updates 2 DLLs and 2 other files.
+## Installing modified files
+- **Exit Wox first**
+- Download the `WebApp-launcher_Modified_plugin_files_only.zip`
+- Extract that file over the files in the `WebApp launcher...` folder
+- Start Wox and add new commands to WebApp launcher as desired, see examples above
+
+Full modified plugin files provided if needed in `WebApp-launcher_Full_modified_plugin.zip`
 
 # Wox WebApp plugin
 
