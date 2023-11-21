@@ -21,7 +21,7 @@ wap add https://time.is/?q={q} time [default]
 ```
 When using that command:
 ```
-wap time paris france
+wap time paris
 ```
 Resulting URL used:
 ```
