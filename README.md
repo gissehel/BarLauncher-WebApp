@@ -1,8 +1,69 @@
-﻿# To install in Wox
+## Modified to accept search terms for more functionality
+This is a modified version of the plugin to add the ability to search with commands.
+It adds the ability to use "{q}" or "%s" when adding new URLs, that will be replaced with terms for web search query when using that command.
+
+Example:
+```
+wap add https://duckduckgo.com/?q={q} ddg [default]
+```
+When using that command:
+```
+wap ddg banana split
+```
+Resulting URL used:
+```
+https://duckduckgo.com/?q=banana%20split
+```
+
+Another example:
+```
+wap add https://time.is/?q={q} time [default]
+```
+When using that command:
+```
+wap time paris
+```
+Resulting URL used:
+```
+https://time.is/?q=paris
+```
+
+Yet another example:
+```
+wap add https://www.urbandictionary.com/define.php?term={q} ud urban urbandictionary [default]
+```
+When using that command:
+```
+wap ud snooze
+```
+Resulting URL used:
+```
+https://www.urbandictionary.com/define.php?term=snooze
+```
+
+# To install in Wox
+
+Follow the original method to install:
 
 ```
 wpm install WebApp launcher
 ```
+## Find your plugin directory
+- Open Wox settings
+  - In the system tray find the Wox Icon
+  - Right click on it
+  - Click "Settings"
+- Click on the "Plugin" tab
+- Find and click "WebApp launcher" in the list on the left
+- Click "Plugin directory" on the right
+
+## Installing modified files
+- **Exit Wox first**
+- Download the `WebApp-launcher_Modified_plugin_files_only.zip`
+- Extract that file over the files in the `WebApp launcher...` folder
+- Start Wox and add new commands to WebApp launcher as desired, see examples above
+
+Full modified plugin files provided if needed in `WebApp-launcher_Full_modified_plugin.zip`
 
 # Wox WebApp plugin
 
